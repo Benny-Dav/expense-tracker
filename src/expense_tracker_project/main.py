@@ -1,24 +1,21 @@
-from unicodedata import category
+import json
 
+FILENAME = "expenses.json"
 
-user1=[
-    {
-        "category": "Food",
-        "description": "Groceries",
-        "amount": 150
-    },
-    {
-        "category": "Skincare",
-        "description": "Vanilla scented lotion",
-        "amount": 180
-    },
-    {
-        "category": "Health",
-        "description": "Becoactin and Dewormer",
-        "amount": 100
-    },
-    
-    ]
+#load json upon application initialization
+def load_expenses(filename):
+    try:
+        #--load expenses list as json 
+        with open(filename,"r") as file:
+            expenses = json.load(file)
+            return expenses
+
+    except FileNotFoundError:
+        return []
+    except json.JSONDecodeError:
+        print("Error: The expenses file contains invalid JSON")
+        raise
+
 
 #function to add expense
 #--should accept a list of expenses,
@@ -39,8 +36,18 @@ def add_expense(expenses,category,description,amount):
     #return updated expenses list
     return expenses
 
-#test function on user1 list
-add_expense(user1, "Food", "Bag of water", 12)
+
+
+#saving functionality to persist expenses
+#--accept expenses list and filename
+#--open file in write mode
+#--save expenses as json
+
+def save_expenses(expenses_list, filename):
+    #--open file in write/ save list to json
+    with open(filename,"w") as file:
+        json.dump(expenses_list,file,indent=4)
+
 
 
 #function to view all expenses
@@ -48,15 +55,14 @@ add_expense(user1, "Food", "Bag of water", 12)
 
 def view_expenses(expenses):
     print("---YOUR EXPENSES---")
-    if len(expenses) ==0:
+    if len(expenses) == 0:
         print("You have no expenses recorded yet.")
-    for e in expenses:
-        print("-> Category : ", e["category"])
-        print("-> Description : ", e["description"])
-        print("-> Amount : ", e["amount"],"\n")
+    else:
+        for e in expenses:
+            print("-> Category : ", e["category"])
+            print("-> Description : ", e["description"])
+            print("-> Amount : ", e["amount"],"\n")
 
-#test function 
-view_expenses(user1)
 
 
 #function to calc total expenditure
@@ -88,8 +94,7 @@ def filter_by_category(expenses, category):
             filtered_list.append(e)
     return filtered_list
 
-#test function
-filter_by_category(user1,"Clothing")
+
 
 
 #function for summary of expenses per category
@@ -113,3 +118,15 @@ def category_summary(expenses):
             summary[category] +=amount
     
     return summary
+
+#----------------------------------------------------------------
+#Application Initialization
+#----------------------------------------------------------------
+
+expenses = load_expenses(FILENAME)
+view_expenses(expenses)
+
+#test
+# expenses = add_expense(expenses,"Food","Groceries",150)
+# save_expenses(expenses,FILENAME)
+# view_expenses(expenses)
