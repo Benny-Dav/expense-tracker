@@ -126,7 +126,74 @@ def category_summary(expenses):
 expenses = load_expenses(FILENAME)
 view_expenses(expenses)
 
-#test
-# expenses = add_expense(expenses,"Food","Groceries",150)
-# save_expenses(expenses,FILENAME)
-# view_expenses(expenses)
+#display menu and take user input
+def display_menu():
+    #display menu options
+    print (
+        "========== PERSONAL EXPENSE TRACKER ========\n"
+        "1. Add an expense\n"
+        "2. View all expenses\n"
+        "3. Calculate total expenditure\n"
+        "4. Filter expenses by category\n"
+        "5. View category summary\n"
+        "6. Exit\n"
+    )
+
+    #capture user's choice
+    choice = input("Choose an option :")
+
+    #return user's choice
+    return choice
+
+    
+# menu_choice = display_menu()
+# print("You selected : ", menu_choice)
+
+#run application loop
+def run_application():
+    #keep application running
+    menu_choice = ""
+
+    while menu_choice != "6":
+        menu_choice = display_menu()
+        #if user selects 1
+        if menu_choice == "1":
+            category = input("Enter category : ")
+            description = input("Enter description : ")
+            amount = float(input("Enter amount : "))
+            add_expense(expenses,category,description,amount)
+            #save new expense
+            save_expenses(expenses, FILENAME)
+        #if user selects 2
+        elif menu_choice == "2":
+            view_expenses(expenses)
+
+        #if user selects 3
+        elif menu_choice == "3":
+            total_expenditure = calc_total_expenditure(expenses)
+            print("Your total expenditure is : GHS ", total_expenditure)
+
+        #if user selects 4
+        elif menu_choice == "4":
+            category = input("Enter category to filter : ")
+            filtered_list = filter_by_category(expenses, category)
+            if len(filtered_list) == 0:
+                print("There are no expenses in this category")
+            else :
+                view_expenses(filtered_list)
+
+        #if user selects 5
+        elif menu_choice == "5":
+            summary = category_summary(expenses)
+            if len(summary) == 0:
+                print("No expenses recorded yet")
+            else:
+                print("=====CATEGORY SPENDING SUMMARY=====")
+                for category,total in summary.items():
+                    print(f"{category} : {total}")
+
+        #check if user selected 6
+        elif menu_choice == "6":
+            print("Goodbye")
+
+run_application()

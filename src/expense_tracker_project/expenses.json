@@ -3,5 +3,15 @@
         "category": "Food",
         "description": "Groceries",
         "amount": 150
+    },
+    {
+        "category": "skincare",
+        "description": "scented shower gel",
+        "amount": 180.0
+    },
+    {
+        "category": "Electronics",
+        "description": "Cat-ear Headphones with Microphone",
+        "amount": 350.0
     }
 ]
