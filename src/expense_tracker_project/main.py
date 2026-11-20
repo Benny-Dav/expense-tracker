@@ -8,7 +8,11 @@ def load_expenses(filename):
         #--load expenses list as json 
         with open(filename,"r") as file:
             expenses = json.load(file)
-            return expenses
+
+            if isinstance(expenses, list):
+                return expenses
+            else:
+                raise ValueError("The file content should be a list")
 
     except FileNotFoundError:
         return []
@@ -128,8 +132,11 @@ view_expenses(expenses)
 
 #display menu and take user input
 def display_menu():
-    #display menu options
-    print (
+    valid = False
+
+    while not valid:
+        #display menu options
+        print (
         "========== PERSONAL EXPENSE TRACKER ========\n"
         "1. Add an expense\n"
         "2. View all expenses\n"
@@ -138,9 +145,13 @@ def display_menu():
         "5. View category summary\n"
         "6. Exit\n"
     )
-
-    #capture user's choice
-    choice = input("Choose an option :")
+        #capture user's choice
+        choice = input("Choose an option :")
+        #validate no empty space and no number less than 1 or above 6
+        if choice not in ("1", "2", "3", "4", "5", "6"):
+            print("Enter an option from the menu")
+        else:
+            valid = True
 
     #return user's choice
     return choice
@@ -148,6 +159,47 @@ def display_menu():
     
 # menu_choice = display_menu()
 # print("You selected : ", menu_choice)
+
+#input validation
+#--amount input validation
+def get_amount():
+    valid = False
+    while not valid:
+        try:
+            amount = float(input("Enter expense amount : "))
+            if amount <=0:
+                print("Enter a valid number greater than 0")
+            else:
+                valid = True
+        except ValueError:
+            print("Enter a valid number")
+    
+    return amount
+
+#--category input validation
+def get_category():
+    valid = False
+    while not valid:
+        category = input("Enter an expense category : ")
+
+        if not category.strip():
+            print("Enter a valid category")
+        else:
+            valid = True
+    return category.strip()
+
+#--description input validation
+def get_description():
+    #loop to keep asking until valid value
+    valid = False
+    while not valid:
+        description = input("Enter an expense description : ")
+        if not description.strip():
+            print("Enter a valid description")
+        else:
+            valid = True
+    return description.strip()
+
 
 #run application loop
 def run_application():
@@ -158,9 +210,9 @@ def run_application():
         menu_choice = display_menu()
         #if user selects 1
         if menu_choice == "1":
-            category = input("Enter category : ")
-            description = input("Enter description : ")
-            amount = float(input("Enter amount : "))
+            category = get_category()
+            description = get_description()
+            amount = get_amount()
             add_expense(expenses,category,description,amount)
             #save new expense
             save_expenses(expenses, FILENAME)
@@ -197,3 +249,4 @@ def run_application():
             print("Goodbye")
 
 run_application()
+
